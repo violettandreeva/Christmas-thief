@@ -1,0 +1,331 @@
+@font-face {
+  font-family: "Mountains of Christmas";
+  src: local("mountains-of-christmas"),
+   url("fonts/mountains-of-christmas-2.woff2") format("woff2"),
+   url("fonts/mountains-of-christmas-2.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Balsamiq Regular";
+  src: local("Balsamiq-Regular"),
+   url("fonts/BalsamiqSans-Regular.woff2") format("woff2"),
+   url("fonts/BalsamiqSans-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piedra Regular";
+  src: local("Piedra-Regular"),
+   url("fonts/Piedra-Regular.woff2") format("woff2"),
+   url("fonts/Piedra-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+  /* Основные стили */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f8ff;
+}
+
+/* снег */
+#snowContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  font-size: 12px; /* Базовый размер */
+  color: white;
+  animation: fall infinite linear, spin infinite linear;
+}
+
+@keyframes fall {
+  0% {
+      transform: translateY(0);
+  }
+  100% {
+      transform: translateY(100vh);
+  }
+}
+
+
+/* карта */
+.map-container {
+  position: fixed;
+  width: 100%;
+  margin: 0 auto;
+  background-image: url('pics/фон.png'); /* Путь к твоему изображению */
+  background-size: cover; /* Растягивает фон, сохраняя пропорции */
+  background-position: center; /* Центрирует фон */
+  background-repeat: no-repeat; /* Убирает повторение */
+  width: 100vw;
+  height: 100vh; 
+}
+
+.point {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  background-color: #2A4E65;
+  border: 2px solid #FDFBD5;
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.3s;
+}
+
+.point::after {
+  content: attr(data-dialog); /* Номер берётся из атрибута data-dialog */
+  position: absolute;
+  bottom: -30px; /* Смещаем номер вниз */
+  left: 50%;
+  transform: translateX(-50%); /* Центровка текста */
+  font-size: 32px;
+  font-weight: 700;
+  font-family: "Piedra Regular", sans-serif;
+  color: #FDFBD5;
+  -webkit-text-stroke: 1px #360E0B;
+}
+
+.point.opened {
+  background-image: none; /* Убираем подарок */
+  background-color: #F44043; /* Красный цвет */
+}
+
+.point.opened::after {
+  content: "✔"; /* Галочка вместо номера */
+  font-size: 28px;
+  color: #FDFBD5;
+  bottom: 0;
+}
+
+
+.point .gift {
+  position: absolute;
+  top: -25px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95px; /* Размер подарка */
+  height: 68px;
+  background-image: url('pics/подарок.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  will-change: transform;
+  animation: none;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(-50%) rotate(0deg); /* Совмещаем с центрированием */
+  }
+  25% {
+    transform: translateX(-50%) rotate(-5deg); /* Смещение поворота */
+  }
+  75% {
+    transform: translateX(-50%) rotate(5deg); /* Смещение поворота */
+  }
+}
+
+.point.locked .gift {
+  filter: grayscale(80%); /* Делаем заблокированный подарок серым */
+}
+
+.point:hover .gift {
+  animation: shake 0.5s ease-in-out infinite; /* Тряска только подарка */
+  transform-origin: center
+}
+
+.point.opened .gift {
+  animation: none; /* Убираем тряску */
+  display: none; /* Убираем подарок, если точка открыта */
+}
+
+/* Стили для меню */
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("pics/фон\ меню.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1; /* Разместить под содержимым */
+  filter: brightness(0.4); /* Затемнение */
+}
+
+.dialog-box {
+  background-color: #204359;
+  padding: 20px;
+  width: 1250px;
+  height: 650px;
+  text-align: center;
+  border: 3px solid #FCFACC;
+  border-radius: 60px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1; /* Поверх затемнения */
+}
+
+.dialog-header {
+  margin: 0 auto;
+  padding: 40px 155px 0px 155px;
+  font-family: "Mountains of Christmas", sans-serif;
+  font-weight: 700;
+  font-size: 96px;
+  text-align: center;
+  color: #FDFBD5;
+}
+
+.dialog-text {
+  margin: 0 auto;
+  padding: 0px 72px 30px 135px;
+  font-family: "Balsamiq Regular", sans-serif;
+  font-size: 26px;
+  display: flex;
+  line-height: 40px;
+  align-items: center;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.dialog-text {
+  opacity: 0;
+  animation: fadeIn 2.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialog-button {
+  padding: 0px 485px 34px 485px;
+  color: #FCFACC;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  font-family: "Balsamiq Regular", sans-serif;
+}
+
+/* .dialog-button:hover {
+  background-color: #0056b3;
+} */
+
+/* Стили для диалогового окна */
+.dialog-overlay-game {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-box-game {
+  margin: 0 auto;
+  width: 1250px;
+  height: 650px;
+  text-align: center;
+  border-radius: 60px;
+  background-image: url("pics/диалоговое\ окно.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.dialog-text-game {
+  margin: 0 auto;
+  padding: 64px 375px 259px 339px;
+  text-align: left;
+  font-size: 24px;
+  font-family: "Balsamiq Regular", sans-serif;
+  color: #FCFACC;
+}
+
+.violetta-pic {
+  position: absolute;
+  top: 22px; 
+  left: 200px;
+  transform: translateX(-50%);
+  width: 244px;
+  height: 376px;
+  background-image: url('pics/ви.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.vlad-pic {
+  position: absolute;
+  top: 270px; 
+  left: 1050px;
+  transform: translateX(-50%);
+  width: 373px;
+  height: 380px;
+  background-image: url('pics/влад.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.dialog-button-game {
+  position: absolute;
+  padding: 0;
+  top: 583px;
+  left: 500px;
+  /* margin-right: 485px;
+  margin-left: 485px;
+  margin-bottom: 34px; */
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  font-family: "Balsamiq Regular", sans-serif;
+  cursor: pointer;
+  color: #FCFACC;
+}
+
+/* стили для диалогов */
